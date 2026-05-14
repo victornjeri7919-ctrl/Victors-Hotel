@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VICTOR'S TASTY BITES</title>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- YOUR ORIGINAL CSS STARTS HERE --- */
+        /* Simple CSS Reset & Basics */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #f5f5f5; padding-bottom: 20px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Header */
+        header { background: white; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        
+        .logo { font-size: 24px; font-weight: bold; color: #333; }
+        .logo span { color: #f68b1e; }
+
+        .search-bar { flex-grow: 1; max-width: 500px; display: flex; }
+        .search-bar input { width: 100%; padding: 10px; border: 1px solid #ddd; outline: none; }
+        .search-bar button { padding: 10px 20px; background: #f68b1e; border: none; color: white; cursor: pointer; }
+
+        .cart-icon { position: relative; font-size: 20px; color: #333; }
+        .cart-count { position: absolute; top: -8px; right: -10px; background: #f68b1e; color: white; font-size: 12px; padding: 2px 6px; border-radius: 50%; }
+
+        /* Navigation */
+        nav { background: #282828; color: white; padding: 10px; }
+        .nav-list { max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; overflow-x: auto; font-size: 14px; }
+        .nav-list li:hover { color: #f68b1e; cursor: pointer; }
+
+        /* Main Layout */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        
+        .hero { background: linear-gradient(to right, #f68b1e, #ffcd3c); padding: 40px; text-align: center; color: white; border-radius: 5px; margin-bottom: 20px; }
+        .hero h1 { margin-bottom: 10px; }
+
+        .section-title { font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #f68b1e; display: inline-block; padding-bottom: 5px; }
+
+        /* Product Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+
+        .card { background: white; border: 1px solid #eee; padding: 15px; border-radius: 4px; transition: 0.2s; text-align: center; }
+        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #f68b1e; }
+        
+        .card img { width: 100%; height: 180px; object-fit: cover; margin-bottom: 10px; }
+        .card h3 { font-size: 14px; height: 40px; overflow: hidden; margin-bottom: 10px; }
+        
+        .price { color: #f68b1e; font-weight: bold; font-size: 18px; }
+        .old-price { text-decoration: line-through; color: #999; font-size: 12px; margin-left: 5px; }
+        
+        .btn { background: white; border: 1px solid #f68b1e; color: #f68b1e; padding: 8px 15px; margin-top: 10px; cursor: pointer; width: 100%; font-weight: bold; border-radius: 3px; }
+        .btn:hover { background: #f68b1e; color: white; }
+
+        /* Footer */
+        footer { background: #222; color: #888; text-align: center; padding: 20px; margin-top: 40px; font-size: 12px; }
+
+        /* Mobile tweak */
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; align-items: stretch; }
+            .search-bar { margin-top: 10px; max-width: 100%; }
+        }
+        /* --- YOUR ORIGINAL CSS ENDS HERE --- */
+
+        /* --- NEW CSS FOR THE MODAL (POPUP) --- */
+        
+        /* The background overlay */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.5); /* Dark background */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The white box */
+        .modal-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+
+        .modal-box h3 { margin-bottom: 15px; color: #333; }
+        .modal-box p { font-size: 14px; color: #666; margin-bottom: 15px; }
+
+        /* Form Inputs */
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 5px; font-weight: bold; color: #444; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Buttons in Modal */
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background: #eee; color: #333; border: none; padding: 10px; flex: 1; border-radius: 3px; cursor: pointer; }
+        .btn-confirm { background: #f68b1e; color: white; border: none; padding: 10px; flex: 1; border-radius: 3px; cursor: pointer; }
+        .btn-confirm:hover { background: #e07b0e; }
+
+        /* Success Message */
+        .success-msg {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">VICTOR'S <span>TASTY BITES</span></a>
+            <div class="search-bar">
+                <input type="text" placeholder="Search food & drinks...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul class="nav-list">
+            <li>All Categories</li>
+            <li>Fast Food</li>
+            <li>Drinks & Sodas</li>
+            <li>Traditional Food</li>
+            <li>Snacks</li>
+            <li>Alcohol</li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Welcome to Victor's Tasty Bites</h1>
+            <p>Best food and drinks delivered fast in Kenya!</p>
+        </div>
+
+        <h2 class="section-title">Our Menu</h2>
+        
+        <div class="grid">
+            <!-- Product 1 -->
+            <div class="card">
+                <img src="bagger.jpg">
+                <h3>Double Cheese Beef Burger</h3>
+                <div><span class="price">Ksh 550</span></div>
+                <!-- UPDATED BUTTON -->
+                <button class="btn" onclick="openOrderModal('Double Cheese Beef Burger', 550)">Add to Cart</button>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="card">
+                <img src="pizza.jpg">
+                <h3>Large Pepperoni Pizza</h3>
+                <div><span class="price">Ksh 1,200</span> <span class="old-price">Ksh 1,500</span></div>
+                <button class="btn" onclick="openOrderModal('Large Pepperoni Pizza', 1200)">Add to Cart</button>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="card">
+                <img src="chapati.jpg">
+                <h3>Soft Chapati (Pair)</h3>
+                <div><span class="price">Ksh 50</span></div>
+                <button class="btn" onclick="openOrderModal('Soft Chapati (Pair)', 50)">Add to Cart</button>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="card">
+                <img src="Cola.jpg">
+                <h3>Coca Cola 500ml</h3>
+                <div><span class="price">Ksh 60</span></div>
+                <button class="btn" onclick="openOrderModal('Coca Cola 500ml', 60)">Add to Cart</button>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="card">
+                <img src="choma.jpg">
+                <h3>Nyama Choma (1kg)</h3>
+                <div><span class="price">Ksh 1,000</span></div>
+                <button class="btn" onclick="openOrderModal('Nyama Choma (1kg)', 1000)">Add to Cart</button>
+            </div>
+
+            <!-- Product 6 -->
+            <div class="card">
+                <img src="mango.jpg">
+                <h3>Fresh Mango Juice (1L)</h3>
+                <div><span class="price">Ksh 250</span></div>
+                <button class="btn" onclick="openOrderModal('Fresh Mango Juice (1L)', 250)">Add to Cart</button>
+            </div>
+
+            <!-- Product 7 -->
+            <div class="card">
+                <img src="fries.jpg">
+                <h3>Crispy French Fries</h3>
+                <div><span class="price">Ksh 200</span></div>
+                <button class="btn" onclick="openOrderModal('Crispy French Fries', 200)">Add to Cart</button>
+            </div>
+
+            <!-- Product 8 -->
+            <div class="card">
+                <img src="tusker.jpg">
+                <h3>Tusker Lager (500ml)</h3>
+                <div><span class="price">Ksh 180</span></div>
+                <button class="btn" onclick="openOrderModal('Tusker Lager (500ml)', 180)">Add to Cart</button>
+            </div>
+
+            <!-- Product 9 -->
+            <div class="card">
+                <img src="samosa.jpg">
+                <h3>Beef Samosa (3pcs)</h3>
+                <div><span class="price">Ksh 100</span></div>
+                <button class="btn" onclick="openOrderModal('Beef Samosa (3pcs)', 100)">Add to Cart</button>
+            </div>
+
+            <!-- Product 10 -->
+            <div class="card">
+                <img src="water.jpg">
+                <h3>Mineral Water (1L)</h3>
+                <div><span class="price">Ksh 50</span></div>
+                <button class="btn" onclick="openOrderModal('Mineral Water (1L)', 50)">Add to Cart</button>
+            </div>
+
+            <!-- Product 11 -->
+            <div class="card">
+                <img src="smocha.jpg">
+                <h3>Smocha (Chapati Smokie)</h3>
+                <div><span class="price">Ksh 80</span></div>
+                <button class="btn" onclick="openOrderModal('Smocha (Chapati Smokie)', 80)">Add to Cart</button>
+            </div>
+
+            <!-- Product 12 -->
+            <div class="card">
+                <img src="milk.jpg">
+                <h3>Fresh Milk (500ml)</h3>
+                <div><span class="price">Ksh 70</span></div>
+                <button class="btn" onclick="openOrderModal('Fresh Milk (500ml)', 70)">Add to Cart</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Victor's Tasty Bites. All rights reserved. Prices in Ksh.</p>
+    </footer>
+
+    <!-- NEW: ORDER MODAL HTML -->
+    <div id="orderModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Order Details</h3>
+            <p id="modalProductDisplay">Product: ...</p>
+            
+            <form id="orderForm" onsubmit="event.preventDefault(); submitOrder();">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="qtyInput" min="1" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phoneInput" placeholder="e.g. 0712345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="locationInput" placeholder="e.g. Westlands, Nairobi" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery Time</label>
+                    <input type="time" id="timeInput" required>
+                </div>
+
+                <div id="successMessage" class="success-msg">
+                    <i class="fas fa-check-circle"></i> Order Request Sent!
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeOrderModal()">Cancel</button>
+                    <button type="submit" class="btn-confirm">Confirm Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NEW: JAVASCRIPT LOGIC -->
+    <script>
+        let currentPrice = 0;
+
+        // Function to open the popup
+        function openOrderModal(productName, price) {
+            // Set the product name in the popup
+            document.getElementById('modalProductDisplay').innerText = "Item: " + productName;
+            currentPrice = price;
+            
+            // Show the modal
+            document.getElementById('orderModal').style.display = 'flex';
+            
+            // Reset fields
+            document.getElementById('orderForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Function to close the popup
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        // Function to handle the order submission
+        function submitOrder() {
+            // Get values from inputs
+            const qty = document.getElementById('qtyInput').value;
+            const phone = document.getElementById('phoneInput').value;
+            const location = document.getElementById('locationInput').value;
+            const time = document.getElementById('timeInput').value;
+
+            // Simple validation (HTML5 'required' does most of the work)
+            if(qty && phone && location && time) {
+                const total = qty * currentPrice;
+                
+                // Show success message inside the modal
+                const successMsg = document.getElementById('successMessage');
+                successMsg.innerHTML = `Order placed!<br>Total: Ksh ${total}<br>We will call you at ${phone}.`;
+                successMsg.style.display = 'block';
+
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    closeOrderModal();
+                    // Update the cart icon count just visually (optional)
+                    const cartCount = document.querySelector('.cart-count');
+                    let count = parseInt(cartCount.innerText);
+                    cartCount.innerText = count + 1;
+                }, 3000);
+            }
+        }
+
+        // Close modal if user clicks outside the white box
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target == modal) {
+                closeOrderModal();
+            }
+        }
+    </script>
+
+</body>
+</html>
